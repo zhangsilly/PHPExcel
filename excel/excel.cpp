@@ -44,9 +44,8 @@ zend_class_entry*	cell_format_ce;
 zend_class_entry*	excel_font_ce;
 zend_class_entry*	excel_sheet_ce;
 
-/* If you declare any globals in php_excel.h uncomment this:
+/* If you declare any globals in php_excel.h uncomment this:*/
 ZEND_DECLARE_MODULE_GLOBALS(excel)
-*/
 
 /* True global resources - no need for thread safety here */
 static int le_excel;
@@ -87,32 +86,32 @@ ZEND_GET_MODULE(excel)
 
 /* {{{ PHP_INI
  */
-/* Remove comments and fill if you need to have entries in php.ini
+/* Remove comments and fill if you need to have entries in php.ini*/
 PHP_INI_BEGIN()
-    STD_PHP_INI_ENTRY("excel.global_value",      "42", PHP_INI_ALL, OnUpdateLong, global_value, zend_excel_globals, excel_globals)
-    STD_PHP_INI_ENTRY("excel.global_string", "foobar", PHP_INI_ALL, OnUpdateString, global_string, zend_excel_globals, excel_globals)
+    STD_PHP_INI_ENTRY("excel.default_charset",      "UTF-8", PHP_INI_ALL, OnUpdateStringUnempty, default_charset, zend_excel_globals, excel_globals)
 PHP_INI_END()
-*/
 /* }}} */
 
 /* {{{ php_excel_init_globals
  */
-/* Uncomment this function if you have INI entries
+/* Uncomment this function if you have INI entries */
 static void php_excel_init_globals(zend_excel_globals *excel_globals)
 {
-	excel_globals->global_value = 0;
-	excel_globals->global_string = NULL;
+    excel_globals->default_charset  = "UTF-8";
 }
-*/
+
+static void php_excel_destroy_globals(zend_excel_globals* excel_globals)
+{
+}
 /* }}} */
 
 /* {{{ PHP_MINIT_FUNCTION
  */
 PHP_MINIT_FUNCTION(excel)
 {
-	/* If you have INI entries, uncomment these lines 
+    ZEND_INIT_MODULE_GLOBALS(excel, php_excel_init_globals, php_excel_destroy_globals);
 	REGISTER_INI_ENTRIES();
-	*/
+
     register_excel_class_ce(TSRMLS_C);
     register_excel_sheet_class_ce(TSRMLS_C);
     register_excel_font_class_ce(TSRMLS_C);
@@ -126,9 +125,8 @@ PHP_MINIT_FUNCTION(excel)
  */
 PHP_MSHUTDOWN_FUNCTION(excel)
 {
-	/* uncomment this line if you have INI entries
 	UNREGISTER_INI_ENTRIES();
-	*/
+
 	return SUCCESS;
 }
 /* }}} */

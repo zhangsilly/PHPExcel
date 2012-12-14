@@ -4,15 +4,14 @@ CONFIG += console
 CONFIG -= app_bundle
 CONFIG -= qt
 
-PHP_SOURCE_DIR  = ../../../
+PHP_SOURCE_DIR  = "D:\\php-5.4.8"
+PHP_BINARY_DIR  = "D:\\Program Files (x86)\\php"
 
 INCLUDEPATH += $${PHP_SOURCE_DIR}           \
                $${PHP_SOURCE_DIR}\\TSRM     \
                $${PHP_SOURCE_DIR}\\win32    \
                $${PHP_SOURCE_DIR}\\Zend     \
                $${PHP_SOURCE_DIR}\\main
-
-PHP_BINARY_DIR  = "D:\\Program Files (x86)\\php"
 
 CONFIG(release) {
     DESTDIR         = $${PHP_SOURCE_DIR}\\Release_TS
@@ -46,7 +45,8 @@ SOURCES += \
     ../excel.cpp \
     ../BasicExcel.cpp \
     ../PHPExcelFormat.cpp \
-    ../PHPExcelFont.cpp
+    ../PHPExcelFont.cpp \
+    ../Util.cpp
 
 HEADERS += \
     ../PHPExcelSheet.hpp \
@@ -55,5 +55,6 @@ HEADERS += \
     ../php_excel.h \
     ../ExcelFormat.hpp \
     ../BasicExcel.hpp \
-    ../PHPExcelFont.hpp
+    ../PHPExcelFont.hpp \
+    ../Util.hpp
 

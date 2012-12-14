@@ -1,5 +1,7 @@
 #include "PHPExcel.hpp"
 #include "PHPExcelSheet.hpp"
+#include "Util.hpp"
+#include "php_excel.h"
 
 extern "C" {
 #include "zend_exceptions.h"
@@ -9,10 +11,17 @@ extern	zend_class_entry*		excel_ce;
 extern	zend_class_entry*		excel_sheet_ce;
 extern	zend_object_handlers	excel_object_handlers;
 
+#ifdef  ZTS
+extern  int                 excel_globals_id;
+#else
+extern  zend_excel_globals  excel_globals;
+#endif
+
 zend_function_entry	excel_methods[]	= {
 	PHP_ME(Excel, __construct, NULL, ZEND_ACC_PRIVATE | ZEND_ACC_CTOR)
 	PHP_ME(Excel, open, NULL, ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
 	PHP_ME(Excel, create, NULL, ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
+    PHP_ME(Excel, getCharset, NULL, ZEND_ACC_PUBLIC)
 	PHP_ME(Excel, getWorkSheet, NULL, ZEND_ACC_PUBLIC)
 	PHP_ME(Excel, getTotalWorkSheets, NULL, ZEND_ACC_PUBLIC)
 	PHP_ME(Excel, saveAs, NULL, ZEND_ACC_PUBLIC)
@@ -30,6 +39,11 @@ void	excel_free_storage(void* object TSRMLS_DC)
 	{
 		delete	obj->pFmtMgr;
 	}
+    if (obj->szCharset != EXCEL_G(default_charset)
+            && obj->szCharset != NULL)
+    {
+        efree(obj->szCharset);
+    }
 	zend_object_std_dtor(&obj->std TSRMLS_CC);
 
 	efree(obj);
@@ -161,12 +175,24 @@ PHP_METHOD(Excel, getTotalWorkSheets)
 	RETURN_FALSE;
 }
 
+PHP_METHOD(Excel, getCharset)
+{
+    excel_object*	obj	= (excel_object*) zend_object_store_get_object(this_ptr TSRMLS_CC);
+    if (obj->szCharset != NULL)
+    {
+        RETURN_STRING(obj->szCharset, 1);
+    } else {
+        RETURN_STRING(EXCEL_G(default_charset), 1);
+    }
+}
+
 PHP_METHOD(Excel, create)
 {
-	int	nSheetNum		= 1;
+    int	nStrLen, nSheetNum		= 1;
+    char*   szCharset   = NULL;
 	BasicExcel*	excel	= NULL;
 
-	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "|l", &nSheetNum) == FAILURE)
+    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "|ls", &nSheetNum, &szCharset, &nStrLen) == FAILURE)
 	{
 		RETURN_FALSE;
 	}
@@ -184,4 +210,13 @@ PHP_METHOD(Excel, create)
 	excel_object*	obj	= (excel_object*) zend_object_store_get_object(return_value TSRMLS_CC);
 	obj->pExcel		= excel;
 	obj->pFmtMgr	= NULL;
+    if (szCharset != NULL)
+    {
+        char*   charset = (char*) emalloc(sizeof(char) * (nStrLen + 1));
+        strncpy(charset, szCharset, nStrLen);
+        charset[nStrLen]    = '\0';
+        obj->szCharset      = charset;
+    } else {
+        obj->szCharset      = EXCEL_G(default_charset);
+    }
 }

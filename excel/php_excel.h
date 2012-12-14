@@ -47,12 +47,10 @@ PHP_FUNCTION(confirm_excel_compiled);	/* For testing, remove later. */
 /* 
   	Declare any global variables you may need between the BEGIN
 	and END macros here:     
-
-ZEND_BEGIN_MODULE_GLOBALS(excel)
-	long  global_value;
-	char *global_string;
-ZEND_END_MODULE_GLOBALS(excel)
 */
+ZEND_BEGIN_MODULE_GLOBALS(excel)
+    char*   default_charset;
+ZEND_END_MODULE_GLOBALS(excel)
 
 /* In every utility function you add that needs to use variables 
    in php_excel_globals, call TSRMLS_FETCH(); after declaring other 
