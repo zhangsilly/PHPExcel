@@ -1,0 +1,9 @@
+This Extension is Based On ExcelFormat, By Martin Fuchs And Yap Chun Wei. I use their code from codeproject, which can be download from http://www.codeproject.com/Articles/42504/ExcelFormat-Library .Thanks to Martin Fuchs and Yap Chun Wei.
+
+I just wrap this library for PHP, the initial version is test on a windows 7 with Visual Studio 2008, run with PHP 5.4.9, thread safe.
+
+The code was created a years before, just as a demo. Two years ago,I join a company works for electronic commerce, so, I always works with Excel, Initialy, We use a pure PHP version to create Excel, called PHPExcel.This library is great, but we found many times we need use it to work beyond it's design range, just like create a huge excel file. So I decide to create this extension, but with this extension, we found it generate excel very fast, but in destruct stage, it use too much time, So I droped it, use a self designed Excel Genreator instead, which is write by Java, with JXL.
+
+Currently, I'm not busy as before, so I publish it, and try to supply more features and improve the performance by improve memory alloc.
+
+This extension is write with Qt Creator, now the lastest version is 2.6.0, I think it may be the bestest C++ IDE, It makes coding more comfortable, thanks Nokia.
