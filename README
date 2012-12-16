@@ -7,3 +7,33 @@ The code was created a years before, just as a demo. Two years ago,I join a comp
 Currently, I'm not busy as before, so I publish it, and try to supply more features and improve the performance by improve memory alloc.
 
 This extension is write with Qt Creator, now the lastest version is 2.6.0, I think it may be the bestest C++ IDE, It makes coding more comfortable, thanks Nokia.
+
+Now it with integrated charset support, so you can set utf-8 or gbk charset to Excel, and it works right!
+
+To set default charset, you can set in you php.ini, with set entry:
+
+	excel.default_charset	= UTF-8
+
+Now I Test it with the code below:
+
+	<?php
+	error_reporting(E_ALL);
+	$ts	= gettimeofday(true);
+	$excel	= Excel::create(1, 'UTF-8');
+	$font	= new ExcelFont(ExcelFont::WEIGHT_BOLD);
+	$font->setColor(ExcelFont::COLOR_RED);
+	$cellFmt	= new ExcelCellFormat($excel);
+	$cellFmt->setFont($font);
+	$sheet	= $excel->getWorkSheet(0);
+	for ($row = 0; $row < 6000; ++ $row)
+	{
+		for ($col = 0; $col < 30; ++ $col)
+		{
+			$sheet->setWString($row, $col, '我是一只鱼', $cellFmt);
+		}
+	}
+	$excel->saveAs('aaa.xls');
+	echo gettimeofday(true) - $ts, ' sec';
+
+It runs perfect on Windows Now, and it consumes almost 4.1 ~ 4.2 sec to generate this Excel, which size is about 2.55MB.
+Now the integrated charset support only works on windows, and only test for chinese gbk and utf-8, Linux support will add in next week.
