@@ -29,7 +29,7 @@ Now I Test it with the code below:
 	{
 		for ($col = 0; $col < 30; ++ $col)
 		{
-			$sheet->setWString($row, $col, '我是一只鱼', $cellFmt);
+			$sheet->setWString($row, $col, '鎴戞槸涓�鍙奔', $cellFmt);
 		}
 	}
 	$excel->saveAs('aaa.xls');
