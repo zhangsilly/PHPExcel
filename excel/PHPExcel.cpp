@@ -109,7 +109,8 @@ PHP_METHOD(Excel, getWorkSheet)
 	pSheetObject	= (excel_sheet_object*) zend_object_store_get_object(return_value TSRMLS_CC);
 	if (pSheetObject != NULL)
 	{
-		pSheetObject->pExcelSheet	= pSheet;
+        pSheetObject->pExcelSheet           = pSheet;
+        pSheetObject->pstrToWideConvertor   = getStringToWideConvertorByCharset(obj->szCharset);
 		return;
 	}
 	RETURN_FALSE;

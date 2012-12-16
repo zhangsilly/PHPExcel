@@ -7,9 +7,9 @@ dnl without editing.
 
 dnl If your extension references something external, use with:
 
-dnl PHP_ARG_WITH(excel, for excel support,
-dnl Make sure that the comment is aligned:
-dnl [  --with-excel             Include excel support])
+PHP_ARG_WITH(excel, for excel support,
+Make sure that the comment is aligned:
+[  --with-excel             Include excel support])
 
 dnl Otherwise use enable:
 
@@ -59,5 +59,5 @@ if test "$PHP_EXCEL" != "no"; then
   dnl
   dnl PHP_SUBST(EXCEL_SHARED_LIBADD)
 
-  PHP_NEW_EXTENSION(excel, excel.cpp, $ext_shared)
+  PHP_NEW_EXTENSION(excel, excel.cpp BasicExcel.cpp ExcelFormat.cpp PHPExcel.cpp PHPExcelFont.cpp PHPExcelFormat.cpp PHPExcelSheet.cpp Util.cpp, $ext_shared)
 fi

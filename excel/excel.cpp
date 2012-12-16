@@ -60,6 +60,14 @@ const zend_function_entry excel_functions[] = {
 };
 /* }}} */
 
+/* {{{ php_excel_init_globals
+ */
+/* Uncomment this function if you have INI entries */
+PHP_GINIT_FUNCTION(excel)
+{
+    excel_globals->default_charset  = "UTF-8";
+}
+
 /* {{{ excel_module_entry
  */
 zend_module_entry excel_module_entry = {
@@ -70,13 +78,17 @@ zend_module_entry excel_module_entry = {
 	excel_functions,
 	PHP_MINIT(excel),
 	PHP_MSHUTDOWN(excel),
-	PHP_RINIT(excel),		/* Replace with NULL if there's nothing to do at request start */
-	PHP_RSHUTDOWN(excel),	/* Replace with NULL if there's nothing to do at request end */
+    NULL,		/* Replace with NULL if there's nothing to do at request start */
+    NULL,	/* Replace with NULL if there's nothing to do at request end */
 	PHP_MINFO(excel),
 #if ZEND_MODULE_API_NO >= 20010901
 	"0.1", /* Replace with version number for your extension */
 #endif
-	STANDARD_MODULE_PROPERTIES
+    PHP_MODULE_GLOBALS(excel),
+    PHP_GINIT(excel),
+    NULL,
+    NULL,
+    STANDARD_MODULE_PROPERTIES_EX
 };
 /* }}} */
 
@@ -92,24 +104,12 @@ PHP_INI_BEGIN()
 PHP_INI_END()
 /* }}} */
 
-/* {{{ php_excel_init_globals
- */
-/* Uncomment this function if you have INI entries */
-static void php_excel_init_globals(zend_excel_globals *excel_globals)
-{
-    excel_globals->default_charset  = "UTF-8";
-}
-
-static void php_excel_destroy_globals(zend_excel_globals* excel_globals)
-{
-}
 /* }}} */
 
 /* {{{ PHP_MINIT_FUNCTION
  */
 PHP_MINIT_FUNCTION(excel)
 {
-    ZEND_INIT_MODULE_GLOBALS(excel, php_excel_init_globals, php_excel_destroy_globals);
 	REGISTER_INI_ENTRIES();
 
     register_excel_class_ce(TSRMLS_C);

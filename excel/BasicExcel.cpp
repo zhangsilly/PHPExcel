@@ -794,7 +794,7 @@ int CompoundFile::ChangeDirectory(const wchar_t* path)
 	{
 		// Current directory
 		previousDirectories_.pop_back();
-		return SUCCESS;
+        return YSUCCESS;
 	}
 	if (wcscmp(path, L"..") == 0)
 	{
@@ -804,14 +804,14 @@ int CompoundFile::ChangeDirectory(const wchar_t* path)
 			currentDirectory_ = currentDirectory_->parent_;
 		}
 		previousDirectories_.pop_back();
-		return SUCCESS;
+        return YSUCCESS;
 	}
 	if (wcscmp(path, L"\\") == 0)
 	{
 		// Go to root directory
 		currentDirectory_ = propertyTrees_;
 		previousDirectories_.pop_back();
-		return SUCCESS;
+        return YSUCCESS;
 	}
 
 	// Handle normal cases
@@ -848,7 +848,7 @@ int CompoundFile::ChangeDirectory(const wchar_t* path)
 		}
 	} while(npos < pathLength);
 	previousDirectories_.pop_back();
-	return SUCCESS;
+    return YSUCCESS;
 }
 
 int CompoundFile::MakeDirectory(const wchar_t* path)
@@ -895,7 +895,7 @@ int CompoundFile::FileSize(const wchar_t* path, ULONG& size)
 	if (wcscmp(path, L"\\") == 0)
 	{
 		size = propertyTrees_->self_->_ulSize;
-		return SUCCESS;
+        return YSUCCESS;
 	}
 
 	// Check to see if file is present in the specified directory.
@@ -904,7 +904,7 @@ int CompoundFile::FileSize(const wchar_t* path, ULONG& size)
 		return FILE_NOT_FOUND;
 	else {
 		size = property->self_->_ulSize;
-		return SUCCESS;
+        return YSUCCESS;
 	}
 }
 
@@ -923,7 +923,7 @@ int CompoundFile::ReadFile(const wchar_t* path, char* data)
 		ReadData(propertyTrees_->self_->_sectStart, buffer, true);
 		copy(buffer, buffer+propertyTrees_->self_->_ulSize, data);
 		delete[] buffer;
-		return SUCCESS;
+        return YSUCCESS;
 	}
 
 	// Check to see if file is present in the specified directory.
@@ -946,7 +946,7 @@ int CompoundFile::ReadFile(const wchar_t* path, char* data)
 	// Truncated the retrieved data to the actual file size.
 	copy(buffer, buffer+property->self_->_ulSize, data);
 	delete[] buffer;
-	return SUCCESS;
+    return YSUCCESS;
 }
 
 int CompoundFile::ReadFile(const wchar_t* path, vector<char>& data)
@@ -959,7 +959,7 @@ int CompoundFile::ReadFile(const wchar_t* path, vector<char>& data)
 	ULONG dataSize;
 
 	int ret = FileSize(path, dataSize);
-	if (ret != SUCCESS)
+    if (ret != YSUCCESS)
 		return ret;
 
 	data.resize(dataSize);
@@ -996,7 +996,7 @@ int CompoundFile::WriteFile(const wchar_t* path, const char* data, ULONG size)
 	SaveBAT();
 	SaveProperties();
 
-	return SUCCESS;
+    return YSUCCESS;
 }
 
 int CompoundFile::WriteFile(const wchar_t* path, const vector<char>& data, ULONG size)
@@ -2017,10 +2017,10 @@ int CompoundFile::MakeProperty(const wchar_t* path, CompoundFile::DirectoryEntry
 	{
 		if (parentpath != 0)
 		{
-			if (ChangeDirectory(parentpath) != SUCCESS)
+            if (ChangeDirectory(parentpath) != YSUCCESS)
 			{
 				int ret = MakeDirectory(parentpath);
-				if (ret != SUCCESS)
+                if (ret != YSUCCESS)
 				{
 					delete[] parentpath;
 					delete[] propertyname;
@@ -2056,7 +2056,7 @@ int CompoundFile::MakeProperty(const wchar_t* path, CompoundFile::DirectoryEntry
 			}
 			dirEntries_.insert(dirEntries_.begin()+index, property);
 			InsertPropertyTree(currentDirectory_, property, index);
-			return SUCCESS;
+            return YSUCCESS;
 		} else
 			return DUPLICATE_PROPERTY;
 	}
@@ -2118,7 +2118,7 @@ CompoundFile::PropertyTree* CompoundFile::FindProperty(const wchar_t* path)
 	{
 		int ret = ChangeDirectory(parentpath);
 		delete[] parentpath;
-		if (ret != SUCCESS)
+        if (ret != YSUCCESS)
 		{
 			// Cannot change to specified directory
 			if (filename != 0) delete[] filename;

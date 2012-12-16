@@ -38,8 +38,6 @@ extern zend_module_entry excel_module_entry;
 
 PHP_MINIT_FUNCTION(excel);
 PHP_MSHUTDOWN_FUNCTION(excel);
-PHP_RINIT_FUNCTION(excel);
-PHP_RSHUTDOWN_FUNCTION(excel);
 PHP_MINFO_FUNCTION(excel);
 
 PHP_FUNCTION(confirm_excel_compiled);	/* For testing, remove later. */

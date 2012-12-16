@@ -38,12 +38,14 @@ extern	"C" {
 }
 
 #include "ExcelFormat.hpp"
+#include "Util.hpp"
 
 using namespace ExcelFormat;
 
 struct excel_sheet_object {
 	zend_object				std;
 	BasicExcelWorksheet*	pExcelSheet;
+    stringToWideConvertor   pstrToWideConvertor;
 };
 
 void	excel_sheet_free_storage(void* object TSRMLS_DC);

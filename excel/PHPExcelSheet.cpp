@@ -130,8 +130,21 @@ PHP_METHOD(ExcelSheet, setWString)
     {
         RETURN_FALSE;
     }
-    std::wstring  str   = widen_string(szStr);
-    PHP_EXCEL_SETVALUE(nRow, nCol, str.c_str(), SetWString, zvalFmt)
+    excel_sheet_object* obj =
+            (excel_sheet_object*) zend_object_store_get_object(this_ptr TSRMLS_CC);
+    if (obj != NULL)
+    {
+        BasicExcelCell* pCell   = obj->pExcelSheet->Cell(nRow, nCol);
+        if (pCell != NULL)
+        {
+            wchar_t*  buffer    = obj->pstrToWideConvertor(szStr, nStrLen);
+            pCell->SetWString(buffer);
+            efree(buffer);
+            PHP_EXCEL_SET_FORMAT(pCell, zvalFmt)
+            RETURN_TRUE;
+        }
+    }
+    RETURN_FALSE;
 }
 
 PHP_METHOD(ExcelSheet, setFormat)

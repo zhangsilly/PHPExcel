@@ -4,8 +4,8 @@ CONFIG += console
 CONFIG -= app_bundle
 CONFIG -= qt
 
-PHP_SOURCE_DIR  = "D:\\php-5.4.8"
-PHP_BINARY_DIR  = "D:\\Program Files (x86)\\php"
+PHP_SOURCE_DIR  = "F:\\PHP\\php-5.4.9-src"
+PHP_BINARY_DIR  = "F:\\PHP\\php-5.4.9-Win32-VC9-x86"
 
 INCLUDEPATH += $${PHP_SOURCE_DIR}           \
                $${PHP_SOURCE_DIR}\\TSRM     \
@@ -19,7 +19,7 @@ CONFIG(release) {
     DESTDIR         = $${PHP_SOURCE_DIR}\\Debug_TS
 }
 
-LIBS    +=  -L$${PHP_BINARY_DIR}\dev    \
+LIBS    +=  -L$${PHP_BINARY_DIR}\\dev    \
             -lphp5ts
 
 QMAKE_CXXFLAGS_DEBUG    += /D "ZEND_WIN32"              \
@@ -36,7 +36,8 @@ QMAKE_CXXFLAGS_DEBUG    += /D "ZEND_WIN32"              \
                            /D "EXCEL_EXPORTS"           \
                            /D "COMPILE_DL_EXCEL"        \
                            /D HAVE_EXCEL=1              \
-                           /D "ZEND_WIN32_FORCE_INLINE"
+                           /D "ZEND_WIN32_FORCE_INLINE" \
+                           /D "_USE_32BIT_TIME_T"
 
 SOURCES += \
     ../PHPExcelSheet.cpp \
