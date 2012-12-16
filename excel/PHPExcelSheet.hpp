@@ -45,7 +45,8 @@ using namespace ExcelFormat;
 struct excel_sheet_object {
 	zend_object				std;
 	BasicExcelWorksheet*	pExcelSheet;
-    stringToWideConvertor   pstrToWideConvertor;
+    STW_CONVERTOR           stwCvt;
+    WTS_CONVERTOR           wtsCvt;
 };
 
 void	excel_sheet_free_storage(void* object TSRMLS_DC);
@@ -64,8 +65,7 @@ PHP_METHOD(ExcelSheet, getTotalRows);
 PHP_METHOD(ExcelSheet, getTotalCols);
 PHP_METHOD(ExcelSheet, eraseCell);
 PHP_METHOD(ExcelSheet, getColWidth);
-PHP_METHOD(ExcelSheet, getAnsiSheetName);
-PHP_METHOD(ExcelSheet, getWSheetName);
+PHP_METHOD(ExcelSheet, getSheetName);
 PHP_METHOD(ExcelSheet, getValue);
 
 #endif

@@ -6,9 +6,9 @@
 #include    <Windows.h>
 #endif
 
-typedef wchar_t* (*stringToWideConvertor)(const char*, size_t);
-typedef char*    (*stringToNarrowConvertor)(const wchar_t*, size_t);
-stringToWideConvertor getStringToWideConvertorByCharset(const char* charset);
+typedef wchar_t* (*STW_CONVERTOR)(const char*, size_t);
+typedef char*    (*WTS_CONVERTOR)(const wchar_t*, size_t);
+void    getConvertorByCharset(const char* charset, STW_CONVERTOR* stwCvt, WTS_CONVERTOR* wtsCvt);
 
 #ifdef  PHP_WIN23
 char*   strncpy(char* dest, char* src, size_t n);

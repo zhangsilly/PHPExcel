@@ -37,3 +37,27 @@ Now I Test it with the code below:
 
 It runs perfect on Windows Now, and it consumes almost 4.1 ~ 4.2 sec to generate this Excel, which size is about 2.55MB.
 Now the integrated charset support only works on windows, and only test for chinese gbk and utf-8, Linux support will add in next week.
+
+I add a simple compare with the Pure PHP Project, also called PHPExcel, project Home is http://phpexcel.codeplex.com/ , the simple test is based on the newest version, 1.7.8, the scripts is like below:
+
+	<?php
+	date_default_timezone_set('Asia/Shanghai');
+
+	require './Classes/PHPExcel.php';
+
+	$ts	= gettimeofday(true);
+	$excel	= new PHPExcel();
+	$sheet	= $excel->getSheet(0);
+	for ($row = 1; $row <= 6000; ++ $row)
+	{
+		for ($col = 0; $col < 30; ++ $col)
+		{
+			$sheet->setCellValueByColumnAndRow($col, $row, 'I am a fish', false);
+		}
+	}
+	$writer	= new PHPExcel_Writer_Excel5($excel);
+	$writer->save('aaa.xls');
+	echo gettimeofday(true) - $ts;
+
+Note here, I did'nt use any style, and I replaced the text from Chinese to Pure English, for to avoid charset convert, But, the script consumes 21 ~ 22 second on my same laptop, and, It uses almost double of memory.
+In common issue, the C++ implement will give you 6 times speed and half of memory consume, with less features.

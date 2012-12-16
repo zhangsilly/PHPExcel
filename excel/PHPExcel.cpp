@@ -110,7 +110,7 @@ PHP_METHOD(Excel, getWorkSheet)
 	if (pSheetObject != NULL)
 	{
         pSheetObject->pExcelSheet           = pSheet;
-        pSheetObject->pstrToWideConvertor   = getStringToWideConvertorByCharset(obj->szCharset);
+        getConvertorByCharset(obj->szCharset, &pSheetObject->stwCvt, &pSheetObject->wtsCvt);
 		return;
 	}
 	RETURN_FALSE;

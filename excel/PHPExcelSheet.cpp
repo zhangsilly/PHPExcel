@@ -31,8 +31,7 @@ zend_function_entry	excel_sheet_methods[] = {
 	PHP_ME(ExcelSheet, getTotalRows, NULL, ZEND_ACC_PUBLIC)
 	PHP_ME(ExcelSheet, eraseCell, NULL, ZEND_ACC_PUBLIC)
 	PHP_ME(ExcelSheet, getColWidth, NULL, ZEND_ACC_PUBLIC)
-	PHP_ME(ExcelSheet, getAnsiSheetName, NULL, ZEND_ACC_PUBLIC)
-	PHP_ME(ExcelSheet, getWSheetName, NULL, ZEND_ACC_PUBLIC)
+    PHP_ME(ExcelSheet, getSheetName, NULL, ZEND_ACC_PUBLIC)
 	PHP_ME(ExcelSheet, getValue, NULL, ZEND_ACC_PUBLIC)
 	{NULL, NULL, NULL}
 };
@@ -137,7 +136,7 @@ PHP_METHOD(ExcelSheet, setWString)
         BasicExcelCell* pCell   = obj->pExcelSheet->Cell(nRow, nCol);
         if (pCell != NULL)
         {
-            wchar_t*  buffer    = obj->pstrToWideConvertor(szStr, nStrLen);
+            wchar_t*  buffer    = obj->stwCvt(szStr, nStrLen);
             pCell->SetWString(buffer);
             efree(buffer);
             PHP_EXCEL_SET_FORMAT(pCell, zvalFmt)
@@ -225,23 +224,19 @@ PHP_METHOD(ExcelSheet, mergeCells)
     RETURN_FALSE;
 }
 
-PHP_METHOD(ExcelSheet, getAnsiSheetName)
+PHP_METHOD(ExcelSheet, getSheetName)
 {
     excel_sheet_object* obj = (excel_sheet_object*) zend_object_store_get_object(this_ptr TSRMLS_CC);
     if (obj != NULL && obj->pExcelSheet != NULL)
     {
-        RETURN_STRING(obj->pExcelSheet->GetAnsiSheetName(), 1);
-    }
-    RETURN_FALSE;
-}
-
-PHP_METHOD(ExcelSheet, getWSheetName)
-{
-    excel_sheet_object* obj = (excel_sheet_object*) zend_object_store_get_object(this_ptr TSRMLS_CC);
-    if (obj != NULL && obj->pExcelSheet != NULL)
-    {
-        std::string tmp = narrow_string(obj->pExcelSheet->GetUnicodeSheetName());
-        RETURN_STRINGL(tmp.c_str(), tmp.length(), 1);
+        char* szSheetName   = obj->pExcelSheet->GetAnsiSheetName();
+        if (szSheetName == NULL)
+        {
+            wchar_t*  wSheetName    = obj->pExcelSheet->GetUnicodeSheetName();
+            RETURN_STRING(obj->wtsCvt(wSheetName, -1), 0);
+        } else {
+            RETURN_STRING(szSheetName, 1);
+        }
     }
     RETURN_FALSE;
 }
@@ -308,8 +303,8 @@ PHP_METHOD(ExcelSheet, getValue)
                 RETURN_STRINGL(pCell->GetString(), pCell->GetStringLength(), 1);
             case BasicExcelCell::WSTRING:
                 {
-                    std::string tmp     = narrow_string(pCell->GetWString());
-                    RETURN_STRINGL(tmp.c_str(), tmp.length(), 1);
+                    char* value = obj->wtsCvt(pCell->GetWString(), -1);
+                    RETURN_STRING(value, 0);
                 }
             default:
                 RETURN_STRING("UnSupported Cell Type", 1);
