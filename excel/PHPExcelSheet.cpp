@@ -43,6 +43,10 @@ void excel_sheet_free_storage(void* object TSRMLS_DC)
 	{
 		delete	obj->pExcelSheet;
 	}
+    if (obj->pCharsetConvertor != NULL)
+    {
+        delete obj->pCharsetConvertor;
+    }
 	zend_object_std_dtor(&obj->std TSRMLS_CC);
 	efree(obj);
 }
@@ -136,7 +140,7 @@ PHP_METHOD(ExcelSheet, setWString)
         BasicExcelCell* pCell   = obj->pExcelSheet->Cell(nRow, nCol);
         if (pCell != NULL)
         {
-            wchar_t*  buffer    = obj->stwCvt(szStr, nStrLen);
+            wchar_t*  buffer    = obj->pCharsetConvertor->stwCvt(szStr, nStrLen);
             pCell->SetWString(buffer);
             efree(buffer);
             PHP_EXCEL_SET_FORMAT(pCell, zvalFmt)
@@ -233,7 +237,11 @@ PHP_METHOD(ExcelSheet, getSheetName)
         if (szSheetName == NULL)
         {
             wchar_t*  wSheetName    = obj->pExcelSheet->GetUnicodeSheetName();
-            RETURN_STRING(obj->wtsCvt(wSheetName, -1), 0);
+            size_t  len = -1;
+#ifndef PHP_WIN32
+            len = wcslen(wSheetName);
+#endif
+            RETURN_STRING(obj->pCharsetConvertor->wtsCvt(wSheetName, len), 0);
         } else {
             RETURN_STRING(szSheetName, 1);
         }
@@ -303,7 +311,12 @@ PHP_METHOD(ExcelSheet, getValue)
                 RETURN_STRINGL(pCell->GetString(), pCell->GetStringLength(), 1);
             case BasicExcelCell::WSTRING:
                 {
-                    char* value = obj->wtsCvt(pCell->GetWString(), -1);
+                    const wchar_t* wval   = pCell->GetWString();
+                    size_t  len     = -1;
+#ifndef PHP_WIN32
+                    len = wcslen(wval);
+#endif
+                    char* value = obj->pCharsetConvertor->wtsCvt(wval, len);
                     RETURN_STRING(value, 0);
                 }
             default:

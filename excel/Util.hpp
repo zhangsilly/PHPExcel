@@ -1,17 +1,17 @@
 #ifndef UTIL_HPP
 #define UTIL_HPP
 
-#ifdef PHP_WIN32
-#define     WIN32_LEAN_AND_MEAN
-#include    <Windows.h>
+#include "CharsetConvertor.h"
+#ifndef PHP_WIN32
+#include <iconv.h>
 #endif
 
-typedef wchar_t* (*STW_CONVERTOR)(const char*, size_t);
-typedef char*    (*WTS_CONVERTOR)(const wchar_t*, size_t);
-void    getConvertorByCharset(const char* charset, STW_CONVERTOR* stwCvt, WTS_CONVERTOR* wtsCvt);
+ICharsetConvertor*  getCharsetConverotr(const char* charset);
 
-#ifdef  PHP_WIN23
+#ifdef  PHP_WIN32
 char*   strncpy(char* dest, char* src, size_t n);
+#else
+bool iconv_convert_string(iconv_t iv, const char* in_p, size_t in_len, char** out, size_t* out_len);
 #endif
 
 #endif // UTIL_HPP

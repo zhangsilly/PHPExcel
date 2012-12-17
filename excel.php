@@ -16,3 +16,4 @@ for ($row = 0; $row < 6000; ++ $row)
 	}
 }
 $excel->saveAs('aaa.xls');
+echo gettimeofday(true) - $ts, "\r\n";

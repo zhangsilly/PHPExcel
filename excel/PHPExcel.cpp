@@ -110,7 +110,7 @@ PHP_METHOD(Excel, getWorkSheet)
 	if (pSheetObject != NULL)
 	{
         pSheetObject->pExcelSheet           = pSheet;
-        getConvertorByCharset(obj->szCharset, &pSheetObject->stwCvt, &pSheetObject->wtsCvt);
+        pSheetObject->pCharsetConvertor     = getCharsetConverotr(obj->szCharset);
 		return;
 	}
 	RETURN_FALSE;
@@ -214,8 +214,7 @@ PHP_METHOD(Excel, create)
     if (szCharset != NULL)
     {
         char*   charset = (char*) emalloc(sizeof(char) * (nStrLen + 1));
-        strncpy(charset, szCharset, nStrLen);
-        charset[nStrLen]    = '\0';
+        strncpy(charset, szCharset, nStrLen + 1);
         obj->szCharset      = charset;
     } else {
         obj->szCharset      = EXCEL_G(default_charset);

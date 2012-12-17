@@ -1,14 +1,27 @@
 #include "Util.hpp"
+#include "utf8charsetconvertor.h"
+#include "gbkcharsetconvertor.h"
 
 extern "C" {
 #include "php.h"
+}
+
+ICharsetConvertor*  getCharsetConverotr(const char* charset)
+{
+    if (strnicmp("UTF-8", charset, sizeof("UTF-8") - 1) == 0
+            || strnicmp("UTF8", charset, sizeof("UTF8") - 1) == 0)
+    {
+        return new UTF8CharsetConvertor();
+    } else {
+        return new GBKCharsetConvertor();
+    }
 }
 
 #ifdef  PHP_WIN32
 
 char*   strncpy(char* dest, char* src, size_t n)
 {
-    errno_t ret = strncpy_s(dest, n, src, n);
+    errno_t ret = strncpy_s(dest, n, src, _TRUNCATE);
     if (ret != EINVAL)
     {
         return dest;
@@ -16,57 +29,74 @@ char*   strncpy(char* dest, char* src, size_t n)
     return NULL;
 }
 
-wchar_t* utf8ToWide(const char* str, size_t strLen)
-{
-    DWORD dwLen = MultiByteToWideChar(CP_UTF8, 0, str, -1, NULL, 0);
-    wchar_t* buffer = (wchar_t*) emalloc(sizeof(wchar_t) * dwLen);
-    MultiByteToWideChar(CP_UTF8, 0, str, -1, buffer, dwLen);
-    return buffer;
-}
+#else
 
-char*   wideToUtf8(const wchar_t* str, size_t strLen)
+bool iconv_convert_string(iconv_t iv, const char* in_p, size_t in_len, char** out, size_t* out_len)
 {
-    DWORD  dwLen    = WideCharToMultiByte(CP_UTF8, 0, str, -1, NULL, 0, NULL, NULL);
-    char*   buffer  = (char*) emalloc(sizeof(char) * dwLen);
-    WideCharToMultiByte(CP_UTF8, 0, str, -1, buffer, dwLen, NULL, NULL);
-    return buffer;
-}
+    size_t  in_left, out_size, out_left;
+    char    *out_p, *out_buf, *tmp_buf;
+    size_t  bsz, result = 0;
 
-wchar_t* gbkToWide(const char* str, size_t strLen)
-{
-    DWORD dwLen = MultiByteToWideChar(CP_ACP, 0, str, -1, NULL, 0);
-    wchar_t* buffer = (wchar_t*) emalloc(sizeof(wchar_t) * dwLen);
-    MultiByteToWideChar(CP_ACP, 0, str, -1, buffer, dwLen);
-    return buffer;
-}
+    *out    = NULL;
+    *outLen = 0;
 
-char*  wideToGbk(const wchar_t* str, size_t strLen)
-{
-    DWORD dwLen     = WideCharToMultiByte(CP_ACP, 0, str, -1, NULL, 0, NULL, NULL);
-    char*   buffer  = (char*) emalloc(sizeof(char) * dwLen);
-    WideCharToMultiByte(CP_ACP, 0, str, -1, buffer, dwLen, NULL, NULL);
-    return buffer;
-}
-
-void    getConvertorByCharset(const char* charset, STW_CONVERTOR* stwCvt, WTS_CONVERTOR* wtsCvt)
-{
-    if (strnicmp("UTF-8", charset, sizeof("UTF-8") - 1) == 0
-            || strnicmp("UTF8", charset, sizeof("UTF8") - 1) == 0)
+    if (iv == -1)
     {
-        *stwCvt = utf8ToWide;
-        *wtsCvt = wideToUtf8;
-    } else {
-        *stwCvt = gbkToWide;
-        *wtsCvt = wideToGbk;
+        return false;
     }
-}
-STW_CONVERTOR getStringToWideConvertorByCharset(const char* charset)
-{
-    if (strnicmp("UTF-8", charset, sizeof("UTF-8") - 1) == 0)
+
+    in_left     = in_len;
+    out_left    = in_len + 64; /* Avoid realloc() most cases */
+    out_size    = 0;
+    bsz         = out_left;
+    out_buf     = (char*) emalloc(bsz + 1);
+    out_p       = out_buf;
+
+    while (in_left > 0)
     {
-        return utf8ToWide;
+        result  = iconv(iv, (char**)&in_p, &in_left, (char**)&out_p, &out_left);
+        out_size    = bsz - out_left;
+        if (result = (size_t) -1)
+        {
+            if (errno == E2BIG && in_left > 0)
+            {
+                bsz += in_len;
+                tmp_buf = (char*) erealloc(out_buf, bsz + 1);
+                out_p   = out_buf = tmp_buf;
+                out_p   += out_size;
+                out_left    = bsz - out_size;
+                continue;
+            }
+        }
+        break;
     }
-    return gbkToWide;
+
+    if (result != (size_t) - 1)
+    {
+        /* flush the shift-out sequences */
+        while (true)
+        {
+            result  = iconv(iv, NULL, NULL, (char**) &out_p, &out_left);
+            out_size    = bsz - out_left;
+
+            if (result != (size_t) -1)
+            {
+                break;
+            }
+            if (errno == E2BIG)
+            {
+                bsz += 16;
+                tmp_buf = (char*) erealloc(out_buf, bsz);
+
+                out_p   = out_buf   = tmp_buf;
+                out_p   += out_size;
+                out_left    = bsz   - out_size;
+            } else {
+                break;
+            }
+        }
+    }
+    return true;
 }
 
 #endif

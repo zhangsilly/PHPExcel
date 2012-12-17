@@ -4,8 +4,8 @@ CONFIG += console
 CONFIG -= app_bundle
 CONFIG -= qt
 
-PHP_SOURCE_DIR  = "F:\\PHP\\php-5.4.9-src"
-PHP_BINARY_DIR  = "F:\\PHP\\php-5.4.9-Win32-VC9-x86"
+PHP_SOURCE_DIR  = "D:\\php-5.4.8"
+PHP_BINARY_DIR  = "D:\\php-5.4.8\\Release_TS"
 
 INCLUDEPATH += $${PHP_SOURCE_DIR}           \
                $${PHP_SOURCE_DIR}\\TSRM     \
@@ -19,7 +19,7 @@ CONFIG(release) {
     DESTDIR         = $${PHP_SOURCE_DIR}\\Debug_TS
 }
 
-LIBS    +=  -L$${PHP_BINARY_DIR}\\dev    \
+LIBS    +=  -L$${PHP_BINARY_DIR}    \
             -lphp5ts
 
 QMAKE_CXXFLAGS_DEBUG    += /D "ZEND_WIN32"              \
@@ -47,7 +47,9 @@ SOURCES += \
     ../BasicExcel.cpp \
     ../PHPExcelFormat.cpp \
     ../PHPExcelFont.cpp \
-    ../Util.cpp
+    ../Util.cpp \
+    ../utf8charsetconvertor.cpp \
+    ../gbkcharsetconvertor.cpp
 
 HEADERS += \
     ../PHPExcelSheet.hpp \
@@ -57,5 +59,8 @@ HEADERS += \
     ../ExcelFormat.hpp \
     ../BasicExcel.hpp \
     ../PHPExcelFont.hpp \
-    ../Util.hpp
+    ../Util.hpp \
+    ../CharsetConvertor.h \
+    ../utf8charsetconvertor.h \
+    ../gbkcharsetconvertor.h
 

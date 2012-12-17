@@ -39,14 +39,14 @@ extern	"C" {
 
 #include "ExcelFormat.hpp"
 #include "Util.hpp"
+#include "CharsetConvertor.h"
 
 using namespace ExcelFormat;
 
 struct excel_sheet_object {
 	zend_object				std;
 	BasicExcelWorksheet*	pExcelSheet;
-    STW_CONVERTOR           stwCvt;
-    WTS_CONVERTOR           wtsCvt;
+    ICharsetConvertor*      pCharsetConvertor;
 };
 
 void	excel_sheet_free_storage(void* object TSRMLS_DC);
