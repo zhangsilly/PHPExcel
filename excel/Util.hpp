@@ -4,6 +4,7 @@
 #include "CharsetConvertor.h"
 #ifndef PHP_WIN32
 #include <iconv.h>
+#define strnicmp    strncasecmp
 #endif
 
 ICharsetConvertor*  getCharsetConverotr(const char* charset);

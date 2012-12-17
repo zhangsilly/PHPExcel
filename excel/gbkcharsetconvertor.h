@@ -2,6 +2,9 @@
 #define GBKCHARSETCONVERTOR_H
 
 #include "CharsetConvertor.h"
+#ifndef PHP_WIN32
+#include <iconv.h>
+#endif
 
 class GBKCharsetConvertor : public ICharsetConvertor
 {

@@ -37,10 +37,10 @@ bool iconv_convert_string(iconv_t iv, const char* in_p, size_t in_len, char** ou
     char    *out_p, *out_buf, *tmp_buf;
     size_t  bsz, result = 0;
 
-    *out    = NULL;
-    *outLen = 0;
+    *out        = NULL;
+    *out_len    = 0;
 
-    if (iv == -1)
+    if (iv == (iconv_t) -1)
     {
         return false;
     }

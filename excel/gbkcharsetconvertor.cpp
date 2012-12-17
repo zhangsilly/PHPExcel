@@ -1,4 +1,5 @@
 #include "gbkcharsetconvertor.h"
+#include "Util.hpp"
 
 #ifndef PHP_WIN32
 GBKCharsetConvertor::GBKCharsetConvertor()
