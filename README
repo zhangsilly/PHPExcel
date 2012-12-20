@@ -38,6 +38,8 @@ Now I Test it with the code below:
 It runs perfect on Windows Now, and it consumes almost 4.1 ~ 4.2 sec to generate this Excel, which size is about 2.55MB.
 Now the integrated charset support only works on windows, and only test for chinese gbk and utf-8, Linux support will add in next week.
 
+At 2012-12-20, Before the world rewind, I am glad to annonce, it runs perfect on Linux Now!! On My VPS, SAKURA VPS, 1G RAM and 100G HDD Brand, PHP 5.4.9, CentOS 6.3 32bit, Run the PHP code above, Script Charset is GBK, with itegrated Charset support, generate the Excel File use 2.1544990539551 sec, It runs perfect!
+
 I add a simple compare with the Pure PHP Project, also called PHPExcel, project Home is http://phpexcel.codeplex.com/ , the simple test is based on the newest version, 1.7.8, the scripts is like below:
 
 	<?php
