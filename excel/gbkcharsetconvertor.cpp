@@ -10,8 +10,14 @@ GBKCharsetConvertor::GBKCharsetConvertor()
 
 GBKCharsetConvertor::~GBKCharsetConvertor()
 {
-    iconv_close(m_ivStw);
-    iconv_close(m_ivWts);
+    if (m_ivStw != (size_t) - 1)
+    {
+        iconv_close(m_ivStw);
+    }
+    if (m_ivWts != (size_t) - 1)
+    {
+        iconv_close(m_ivWts);
+    }
 }
 #endif
 

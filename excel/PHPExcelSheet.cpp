@@ -141,10 +141,13 @@ PHP_METHOD(ExcelSheet, setWString)
         if (pCell != NULL)
         {
             wchar_t*  buffer    = obj->pCharsetConvertor->stwCvt(szStr, nStrLen);
-            pCell->SetWString(buffer);
-            efree(buffer);
-            PHP_EXCEL_SET_FORMAT(pCell, zvalFmt)
-            RETURN_TRUE;
+            if (buffer != NULL)
+            {
+                pCell->SetWString(buffer);
+                efree(buffer);
+                PHP_EXCEL_SET_FORMAT(pCell, zvalFmt)
+                RETURN_TRUE;
+            }
         }
     }
     RETURN_FALSE;

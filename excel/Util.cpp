@@ -96,6 +96,9 @@ bool iconv_convert_string(iconv_t iv, const char* in_p, size_t in_len, char** ou
             }
         }
     }
+    *out_p      = '\0';
+    *out        = out_buf;
+    *out_len    = out_size;
     return true;
 }
 
