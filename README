@@ -1,3 +1,4 @@
+# PHPExcel
 This Extension is Based On ExcelFormat, By Martin Fuchs And Yap Chun Wei. I use their code from codeproject, which can be download from http://www.codeproject.com/Articles/42504/ExcelFormat-Library .Thanks to Martin Fuchs and Yap Chun Wei.
 
 I just wrap this library for PHP, the initial version is test on a windows 7 with Visual Studio 2008, run with PHP 5.4.9, thread safe.
@@ -15,7 +16,7 @@ To set default charset, you can set in you php.ini, with set entry:
 	excel.default_charset	= UTF-8
 
 Now I Test it with the code below:
-
+```
 	<?php
 	error_reporting(E_ALL);
 	$ts	= gettimeofday(true);
@@ -34,6 +35,7 @@ Now I Test it with the code below:
 	}
 	$excel->saveAs('aaa.xls');
 	echo gettimeofday(true) - $ts, ' sec';
+```
 
 It runs perfect on Windows Now, and it consumes almost 4.1 ~ 4.2 sec to generate this Excel, which size is about 2.55MB.
 Now the integrated charset support only works on windows, and only test for chinese gbk and utf-8, Linux support will add in next week.
